@@ -1,4 +1,4 @@
-package com.algos.ecommerce.Product;
+package com.algos.ecommerce.product;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
