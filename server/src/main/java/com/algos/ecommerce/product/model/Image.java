@@ -1,17 +1,15 @@
-package com.algos.ecommerce.product;
+package com.algos.ecommerce.product.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity @NoArgsConstructor @AllArgsConstructor @Getter @Setter
-public class ProductImage {
+public class Image {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,10 +19,14 @@ public class ProductImage {
 
     private byte[] imageData;
 
-    public ProductImage(String imageName, byte[] imageData) {
+    @ManyToOne(fetch= FetchType.LAZY)
+    @JoinColumn(name="product_productID")
+    @JsonIgnore
+    private Product product;
 
-
+    public Image(String imageName, byte[] imageData, Product product) {
         this.imageName = imageName;
         this.imageData = imageData;
+        this.product = product;
     }
 }

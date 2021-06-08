@@ -1,5 +1,6 @@
-package com.algos.ecommerce.user;
+package com.algos.ecommerce.user.model;
 
+import com.algos.ecommerce.product.model.Image;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,6 +15,8 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -32,7 +35,8 @@ public class User {
     @NotBlank @Size(max = 120) @JsonIgnore
     private String password;
 
-//    @NotBlank @OneToOne
-//    private UserDetails userDetails;
+    @OneToOne
+    @JoinColumn(name = "userDetails_id", referencedColumnName = "userDetailsID")
+    private UserDetails userDetails;
 
 }

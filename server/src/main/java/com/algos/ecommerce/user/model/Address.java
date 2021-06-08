@@ -1,14 +1,11 @@
-package com.algos.ecommerce.user;
+package com.algos.ecommerce.user.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 @Entity
@@ -31,5 +28,9 @@ public class Address {
     private String city;
 
     private String postcode;
+
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="userDetails_id")
+    private UserDetails userDetails;
 
 }

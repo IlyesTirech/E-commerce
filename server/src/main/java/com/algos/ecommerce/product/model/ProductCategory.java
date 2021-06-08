@@ -1,14 +1,13 @@
-package com.algos.ecommerce.product;
+package com.algos.ecommerce.product.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity @NoArgsConstructor @AllArgsConstructor @Getter @Setter
 public class ProductCategory {
@@ -18,4 +17,11 @@ public class ProductCategory {
     private Long productCategoryID;
 
     private String categoryName;
+
+    @OneToMany(
+            mappedBy = "category",
+            orphanRemoval = true,
+            cascade = CascadeType.ALL
+    )
+    private List<Product> products = new ArrayList<>();
 }

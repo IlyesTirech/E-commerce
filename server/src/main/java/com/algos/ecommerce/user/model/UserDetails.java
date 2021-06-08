@@ -1,4 +1,4 @@
-package com.algos.ecommerce.user;
+package com.algos.ecommerce.user.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,8 +32,11 @@ public class UserDetails {
 
     private Integer homeNumber;
 
-//    @NotBlank @OneToMany
-//    private List<Address> addresses = new ArrayList<>();
-
+    @OneToMany(
+            mappedBy = "userDetails",
+            orphanRemoval = true,
+            cascade = CascadeType.ALL
+    )
+    private List<Address> addresses = new ArrayList<>();
 
 }
