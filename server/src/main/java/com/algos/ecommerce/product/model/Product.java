@@ -41,4 +41,14 @@ public class Product {
         this.description = description;
         this.price = price;
     }
+
+    public boolean addImage(Image image){
+        if(!images.contains(image)){
+            images.add(image);
+            image.setProduct(this);
+            return true;
+        }
+        return false;
+    }
+
 }

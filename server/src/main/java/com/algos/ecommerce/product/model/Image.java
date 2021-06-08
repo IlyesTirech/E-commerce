@@ -24,9 +24,8 @@ public class Image {
     @JsonIgnore
     private Product product;
 
-    public Image(String imageName, byte[] imageData, Product product) {
+    public Image(String imageName, byte[] imageData) {
         this.imageName = imageName;
         this.imageData = imageData;
-        this.product = product;
     }
 }
