@@ -22,8 +22,8 @@ public class Product {
     private String description;
     private Double price;
 
-    @NotBlank
-    @OneToMany
-    private List<ProductImage> images = new ArrayList<>();
+//    @NotBlank
+//    @OneToMany
+//    private List<ProductImage> images = new ArrayList<>();
 
 }

@@ -32,8 +32,8 @@ public class UserDetails {
 
     private Integer homeNumber;
 
-    @NotBlank @OneToMany
-    private List<Address> addresses = new ArrayList<>();
+//    @NotBlank @OneToMany
+//    private List<Address> addresses = new ArrayList<>();
 
 
 }
