@@ -5,27 +5,28 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
 @Entity @NoArgsConstructor @AllArgsConstructor @Getter @Setter
+@Table(name = "images")
 public class Image {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long productImageID;
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    private String id;
 
-    private String imageName;
+    private String name;
 
-    private byte[] imageData;
+    private String type;
 
-    @ManyToOne(fetch= FetchType.LAZY)
-    @JoinColumn(name="product_productID")
-    @JsonIgnore
-    private Product product;
+    @Lob
+    private byte[] data;
 
-    public Image(String imageName, byte[] imageData) {
-        this.imageName = imageName;
-        this.imageData = imageData;
+    public Image(String name, String type, byte[] data) {
+        this.name = name;
+        this.type = type;
+        this.data = data;
     }
 }

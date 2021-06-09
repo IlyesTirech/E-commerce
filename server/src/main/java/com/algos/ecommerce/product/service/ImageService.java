@@ -18,22 +18,20 @@ import org.springframework.web.multipart.MultipartFile;
 public class ImageService {
 
     @Autowired
-    private ProductImageRepository imageRepo;
+    private ProductImageRepository fileDBRepository;
 
-    public List<Image> storeAll(MultipartFile[] files) throws IOException {
-        List<Image> images = new ArrayList<>();
-        for(int i =0; i < files.length; i++){
-            Image image = store(files[i]);
-            images.add(image);
-        }
-        return images;
-    }
-
-    private Image store(MultipartFile file) throws IOException {
+    public Image store(MultipartFile file) throws IOException {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        Image FileDB = new Image(fileName, file.getBytes());
+        Image FileDB = new Image(fileName, file.getContentType(), file.getBytes());
 
-        return imageRepo.save(FileDB);
+        return fileDBRepository.save(FileDB);
     }
 
+    public Image getFile(String id) {
+        return fileDBRepository.findById(id).get();
+    }
+
+    public Stream<Image> getAllFiles() {
+        return fileDBRepository.findAll().stream();
+    }
 }

@@ -23,12 +23,12 @@ public class Product {
     private String description;
     private Double price;
 
-    @OneToMany(
-            mappedBy = "product",
-            orphanRemoval = true,
-            cascade = CascadeType.ALL
-    )
-    private List<Image> images = new ArrayList<>();
+//    @OneToMany(
+//            mappedBy = "product",
+//            orphanRemoval = true,
+//            cascade = CascadeType.ALL
+//    )
+//    private List<Image> images = new ArrayList<>();
 
     @ManyToOne(fetch= FetchType.LAZY)
     @JoinColumn(name="categoryID")
@@ -42,13 +42,13 @@ public class Product {
         this.price = price;
     }
 
-    public boolean addImage(Image image){
-        if(!images.contains(image)){
-            images.add(image);
-            image.setProduct(this);
-            return true;
-        }
-        return false;
-    }
+//    public boolean addImage(Image image){
+//        if(!images.contains(image)){
+//            images.add(image);
+//            image.setProduct(this);
+//            return true;
+//        }
+//        return false;
+//    }
 
 }
