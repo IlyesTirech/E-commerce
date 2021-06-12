@@ -21,8 +21,14 @@ public class Image {
 
     private String type;
 
+    @JsonIgnore
     @Lob
     private byte[] data;
+
+    @ManyToOne(fetch= FetchType.LAZY)
+    @JoinColumn(name="product_productID")
+    @JsonIgnore
+    private Product product;
 
     public Image(String name, String type, byte[] data) {
         this.name = name;

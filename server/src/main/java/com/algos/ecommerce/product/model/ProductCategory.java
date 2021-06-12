@@ -24,4 +24,8 @@ public class ProductCategory {
             cascade = CascadeType.ALL
     )
     private List<Product> products = new ArrayList<>();
+
+    public ProductCategory(String categoryName) {
+        this.categoryName = categoryName;
+    }
 }

@@ -7,21 +7,23 @@ import com.algos.ecommerce.product.model.ProductCategory;
 import com.algos.ecommerce.product.repository.ProductCategoryRepository;
 import com.algos.ecommerce.product.repository.ProductImageRepository;
 import com.algos.ecommerce.product.repository.ProductRepository;
+import com.algos.ecommerce.product.request.CreateCategoryRequest;
 import com.algos.ecommerce.product.request.CreateProductRequest;
 import com.algos.ecommerce.product.request.EditProductRequest;
-import com.algos.ecommerce.product.request.ImageTemplateRequest;
+import com.algos.ecommerce.product.response.ProductResponse;
 import com.algos.ecommerce.product.service.ImageService;
 import jdk.jfr.Category;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,21 +44,37 @@ public class ProductController {
     ImageService imageService;
 
 
-    @PostMapping("/image/upload")
-    public ResponseEntity<?> uploadFiles(@RequestParam("files") MultipartFile[] files) {
-        String message = "";
-        try {
-            Arrays.asList(files).stream().forEach(file -> {
-                try {
-                    imageService.store(file);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-            return new ResponseEntity<>(files, HttpStatus.OK );
-        } catch (Exception e) {
-            return new ResponseEntity<>("Images Not Saved", HttpStatus.OK );
+    // TODO: Add images to a product
+    @PostMapping("{productID}/image/upload")
+    public ResponseEntity<?> uploadFiles(
+            @PathVariable Long productID,
+            @NotNull @RequestParam("file") MultipartFile[] files)  {
+
+        Optional<Product> optionalProduct = productRepository.findById(productID);
+        if(!optionalProduct.isPresent()){
+            return new ResponseEntity<>("No Product Found", HttpStatus.NOT_FOUND);
         }
+        Product product = optionalProduct.get();
+        Arrays.asList(files).stream().forEach(file -> {
+            try {
+                Image image = imageService.store(file);
+                product.addImage(image);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        productRepository.save(product);
+        return new ResponseEntity<>(product, HttpStatus.OK);
+    }
+
+    // TODO: GET ONE image
+    @GetMapping(value ="image/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<?> getOneImage(@PathVariable String id){
+        Optional<Image> image = imageRepository.findById(id);
+        if(!image.isPresent()){
+            return new ResponseEntity<>("No Image Found", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(image.get().getData(), HttpStatus.OK);
     }
 
 
@@ -69,52 +87,72 @@ public class ProductController {
         Optional<ProductCategory> categoryById = categoryRepository.findById(request.getCategoryID());
         // if category doesnt exist
         if(!categoryById.isPresent()){
+
             // return default category
+            Long id = Long.valueOf(1);
+            ProductCategory category = categoryRepository.findById(id).get();
+
+            // Create Product
+            Product product = new Product(request.getName(), request.getDescription(), request.getPrice(), category);
+
+            Product finalProduct = productRepository.save(product);
+
+            return new ResponseEntity<>(finalProduct, HttpStatus.OK);
         }
 
         // Create Product
-        Product product = new Product(request.getName(), request.getDescription(), request.getPrice());
+        Product product = new Product(request.getName(), request.getDescription(), request.getPrice(), categoryById.get());
 
-        // Create Image files from data or provide a default placeholder image
-        // Assign images to product
-
-//      // Maps through each image and assigns it to a product
-//        Image[] images = request.getImages();
-//        for(int i =0; i < images.length; i++){
-//            String imageName = images[i].getImageName();
-//            Image newImage = new Image(imageName, images[i].getImageData());
-//            Image savedImage = imageRepository.save(newImage);
-//            product.addImage(savedImage);
-//        }
-        // Save Product
         Product finalProduct = productRepository.save(product);
+
+        return new ResponseEntity<>(finalProduct, HttpStatus.OK);
+
+
+    }
+
+    // TODO: CREATE category
+    @PostMapping("category/create")
+    public ResponseEntity<?> createCategory(
+            @Valid @RequestBody CreateCategoryRequest request) throws IOException {
+
+        ProductCategory category = new ProductCategory(request.getName());
+
+        ProductCategory finalProduct = categoryRepository.save(category);
 
         return new ResponseEntity<>(finalProduct, HttpStatus.OK);
     }
 
 
-    // TODO: GET all products
+    // TODO: GET All products
     @GetMapping("/getAll")
     public ResponseEntity<?> getAllProducts(){
-        List<Product> product = productRepository.findAll();
-        if(product.size() < 1){
+        List<ProductResponse> response = new ArrayList<>();
+        List<Product> products = productRepository.findAll();
+        if(products.size() < 1){
             return new ResponseEntity<>("No Products Found", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(product, HttpStatus.OK);
+        for (Product product: products) {
+            ProductResponse productResponse = new ProductResponse(product);
+            response.add(productResponse);
+        }
+
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    // TODO: GET one
+    // TODO: GET Product
     @GetMapping("/{id}")
     public ResponseEntity<?> getOneProducts(@PathVariable Long id){
         Optional<Product> product = productRepository.findById(id);
         if(!product.isPresent()){
             return new ResponseEntity<>("No Products Found", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(product, HttpStatus.OK);
+        ProductResponse productResponse = new ProductResponse(product.get());
+        return new ResponseEntity<>(productResponse, HttpStatus.OK);
     }
 
 
-    // TODO: EDIT one
+    // TODO: EDIT Product
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateProduct(@PathVariable Long id,
                                            @RequestBody EditProductRequest request){
@@ -149,7 +187,17 @@ public class ProductController {
     }
 
 
-    // TODO: DELETE one
-
+    // TODO: DELETE Product
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteProduct(
+            @PathVariable(name = "id") Long id){
+        Optional<Product> productOptional = productRepository.findById(id);
+        if(!productOptional.isPresent()){
+            return new ResponseEntity<>("Product Not Found", HttpStatus.NOT_FOUND);
+        }
+        Product product = productOptional.get();
+        productRepository.delete(product);
+        return new ResponseEntity<>("Product Deleted!", HttpStatus.OK);
+    }
 
 }
