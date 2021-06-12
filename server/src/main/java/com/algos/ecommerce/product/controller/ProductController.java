@@ -43,42 +43,76 @@ public class ProductController {
     @Autowired
     ImageService imageService;
 
+    /*
+        Image Section: START
+    */
 
-    // TODO: Add images to a product
-    @PostMapping("{productID}/image/upload")
-    public ResponseEntity<?> uploadFiles(
-            @PathVariable Long productID,
-            @NotNull @RequestParam("file") MultipartFile[] files)  {
+        // Add images to a product
+        @PostMapping("{productID}/image/upload")
+        public ResponseEntity<?> uploadFiles(
+                @PathVariable Long productID,
+                @NotNull @RequestParam("file") MultipartFile[] files)  {
 
-        Optional<Product> optionalProduct = productRepository.findById(productID);
-        if(!optionalProduct.isPresent()){
-            return new ResponseEntity<>("No Product Found", HttpStatus.NOT_FOUND);
-        }
-        Product product = optionalProduct.get();
-        Arrays.asList(files).stream().forEach(file -> {
-            try {
-                Image image = imageService.store(file);
-                product.addImage(image);
-            } catch (IOException e) {
-                e.printStackTrace();
+            Optional<Product> optionalProduct = productRepository.findById(productID);
+            if(!optionalProduct.isPresent()){
+                return new ResponseEntity<>("No Product Found", HttpStatus.NOT_FOUND);
             }
-        });
-        productRepository.save(product);
-        return new ResponseEntity<>(product, HttpStatus.OK);
-    }
-
-    // TODO: GET ONE image
-    @GetMapping(value ="image/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
-    public ResponseEntity<?> getOneImage(@PathVariable String id){
-        Optional<Image> image = imageRepository.findById(id);
-        if(!image.isPresent()){
-            return new ResponseEntity<>("No Image Found", HttpStatus.NOT_FOUND);
+            Product product = optionalProduct.get();
+            Arrays.asList(files).stream().forEach(file -> {
+                try {
+                    Image image = imageService.store(file);
+                    product.addImage(image);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            productRepository.save(product);
+            return new ResponseEntity<>(product, HttpStatus.OK);
         }
-        return new ResponseEntity<>(image.get().getData(), HttpStatus.OK);
-    }
 
+        // GET ONE image
+        @GetMapping(value ="image/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
+        public ResponseEntity<?> getOneImage(@PathVariable String id){
+            Optional<Image> image = imageRepository.findById(id);
+            if(!image.isPresent()){
+                return new ResponseEntity<>("No Image Found", HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(image.get().getData(), HttpStatus.OK);
+        }
 
-    // TODO: CREATE product
+    /*
+        Image Section: END
+    */
+
+    /*
+        Category Section: START
+    */
+
+        // CREATE category
+        @PostMapping("category/create")
+        public ResponseEntity<?> createCategory(
+                @Valid @RequestBody CreateCategoryRequest request) throws IOException {
+
+            ProductCategory category = new ProductCategory(request.getName());
+
+            ProductCategory finalProduct = categoryRepository.save(category);
+
+            return new ResponseEntity<>(finalProduct, HttpStatus.OK);
+        }
+
+        // TODO: EDIT Category
+
+        // TODO: DELETE Category
+
+    /*
+        Category Section: END
+    */
+
+    /*
+        Product Section: START
+    */
+
+    // CREATE product
     @PostMapping("/create")
     public ResponseEntity<?> createProduct(
             @Valid @RequestBody CreateProductRequest request) throws IOException {
@@ -109,21 +143,7 @@ public class ProductController {
 
 
     }
-
-    // TODO: CREATE category
-    @PostMapping("category/create")
-    public ResponseEntity<?> createCategory(
-            @Valid @RequestBody CreateCategoryRequest request) throws IOException {
-
-        ProductCategory category = new ProductCategory(request.getName());
-
-        ProductCategory finalProduct = categoryRepository.save(category);
-
-        return new ResponseEntity<>(finalProduct, HttpStatus.OK);
-    }
-
-
-    // TODO: GET All products
+    // GET All products
     @GetMapping("/getAll")
     public ResponseEntity<?> getAllProducts(){
         List<ProductResponse> response = new ArrayList<>();
@@ -140,7 +160,7 @@ public class ProductController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    // TODO: GET Product
+    // GET Product
     @GetMapping("/{id}")
     public ResponseEntity<?> getOneProducts(@PathVariable Long id){
         Optional<Product> product = productRepository.findById(id);
@@ -152,7 +172,7 @@ public class ProductController {
     }
 
 
-    // TODO: EDIT Product
+    // EDIT Product
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateProduct(@PathVariable Long id,
                                            @RequestBody EditProductRequest request){
@@ -187,7 +207,7 @@ public class ProductController {
     }
 
 
-    // TODO: DELETE Product
+    // DELETE Product
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(
             @PathVariable(name = "id") Long id){
@@ -199,5 +219,8 @@ public class ProductController {
         productRepository.deleteById(product.getProductID());
         return new ResponseEntity<>("Product Deleted!", HttpStatus.OK);
     }
+    /*
+        Product Section: END
+    */
 
 }
