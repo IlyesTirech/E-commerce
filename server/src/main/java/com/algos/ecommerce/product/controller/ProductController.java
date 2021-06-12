@@ -196,7 +196,7 @@ public class ProductController {
             return new ResponseEntity<>("Product Not Found", HttpStatus.NOT_FOUND);
         }
         Product product = productOptional.get();
-        productRepository.delete(product);
+        productRepository.deleteById(product.getProductID());
         return new ResponseEntity<>("Product Deleted!", HttpStatus.OK);
     }
 
