@@ -219,6 +219,38 @@ public class ProductController {
         productRepository.deleteById(product.getProductID());
         return new ResponseEntity<>("Product Deleted!", HttpStatus.OK);
     }
+
+    // DELETE Product stock
+    @DeleteMapping("stock/{id}")
+    public ResponseEntity<?> removeProductStock(
+            @PathVariable(name = "id") Long id){
+        Optional<Product> productOptional = productRepository.findById(id);
+        if(!productOptional.isPresent()){
+            return new ResponseEntity<>("Product Not Found", HttpStatus.NOT_FOUND);
+        }
+        Product product = productOptional.get();
+        int stock = product.removeStock();
+        productRepository.save(product);
+        return new ResponseEntity<>("Product Stock altered, The stock is now: "+stock+"!", HttpStatus.OK);
+    }
+
+    // Add Product stock
+    @PostMapping("stock/{id}")
+    public ResponseEntity<?> addProductStock(
+            @PathVariable(name = "id") Long id){
+        Optional<Product> productOptional = productRepository.findById(id);
+        if(!productOptional.isPresent()){
+            return new ResponseEntity<>("Product Not Found", HttpStatus.NOT_FOUND);
+        }
+        Product product = productOptional.get();
+        int stock = product.addStock();
+        productRepository.save(product);
+        return new ResponseEntity<>("Product Stock altered, The stock is now: "+stock+"!", HttpStatus.OK);
+    }
+
+
+
+
     /*
         Product Section: END
     */

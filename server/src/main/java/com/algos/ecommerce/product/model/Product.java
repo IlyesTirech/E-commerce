@@ -2,10 +2,7 @@ package com.algos.ecommerce.product.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jdk.jfr.Category;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -38,11 +35,15 @@ public class Product {
     private ProductCategory category;
 
 
+    private int stock;
+
+
     public Product(String name, String description, Double price, ProductCategory category) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.category = category;
+        this.stock = 0;
     }
 
     public boolean addImage(Image image){
@@ -63,6 +64,20 @@ public class Product {
             imageURLS.add(URL);
         }
         return imageURLS;
+    }
+
+    public int addStock(){
+        this.stock += 1;
+        return stock;
+    }
+
+    public int removeStock(){
+
+        if(stock > 0){
+            this.stock -= 1;
+
+        }
+        return stock;
     }
 
 }
