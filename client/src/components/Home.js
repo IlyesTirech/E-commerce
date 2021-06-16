@@ -23,20 +23,12 @@ const Home = () => {
           products.map(product => (
             <div>
               <h2>{product.name}</h2>
-              <div>
-                {
-                  product.images > 0 ?
-                  <div>
-                    {
-                      product.images.map(image => (
-                        <img src={`http://localhost:8080${image}`} />
-                      ))
-                    }
-                    </div>
-                    :
-                    null
-                }
-              </div>
+              <ul>
+                
+              {product.images.map((image, i) => <img className="w-25 h-25" src={`http://localhost:8080${image}`} key={i} />)}
+                
+              </ul>
+              
               </div>           
           ))
         }
