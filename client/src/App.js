@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Router, Switch, Route, Link } from "react-router-dom";
+import { Nav, NavDropdown, Form, FormControl, Button, Navbar, Container } from "react-bootstrap";
+import styled from "styled-components";
 
+import GlobalStyle from "./GlobalStyle";
 
-
+import Footer from "./components/Footer";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Home from "./components/Home";
@@ -43,72 +46,41 @@ const App = () => {
 
   return (
     <Router history={history}>
+      <GlobalStyle/>
       <div>
-        <nav className="navbar navbar-expand navbar-dark bg-dark">
-          <Link to={"/"} className="navbar-brand">
-            bezKoder
-          </Link>
-          <div className="navbar-nav mr-auto">
-            <li className="nav-item">
-              <Link to={"/home"} className="nav-link">
-                Home
-              </Link>
-            </li>
-
-            {showModeratorBoard && (
-              <li className="nav-item">
-                <Link to={"/mod"} className="nav-link">
-                  Moderator Board
-                </Link>
-              </li>
-            )}
-
-            {showAdminBoard && (
-              <li className="nav-item">
-                <Link to={"/admin"} className="nav-link">
-                  Admin Board
-                </Link>
-              </li>
-            )}
-
-            {currentUser && (
-              <li className="nav-item">
-                <Link to={"/user"} className="nav-link">
-                  User
-                </Link>
-              </li>
-            )}
-          </div>
-
-          {currentUser ? (
-            <div className="navbar-nav ml-auto">
-              <li className="nav-item">
-                <Link to={"/profile"} className="nav-link">
-                  {currentUser.username}
-                </Link>
-              </li>
-              <li className="nav-item">
-                <a href="/login" className="nav-link" onClick={logOut}>
-                  LogOut
-                </a>
-              </li>
-            </div>
-          ) : (
-            <div className="navbar-nav ml-auto">
-              <li className="nav-item">
-                <Link to={"/login"} className="nav-link">
-                  Login
-                </Link>
-              </li>
-
-              <li className="nav-item">
-                <Link to={"/register"} className="nav-link">
-                  Sign Up
-                </Link>
-              </li>
-            </div>
-          )}
-        </nav>
+      <NavigationBar>
+            <Navbar bg="light" expand="lg">
+              <Container>
+                <Navbar.Brand href="#">MOQN</Navbar.Brand>
+                <Navbar.Toggle aria-controls="navbarScroll" />
+                <Navbar.Collapse id="navbarScroll" className="bar-style">
+                  <Nav className="mr-auto my-2 my-lg-0" style={{ maxHeight: '250px' }} navbarScroll>
+                    <Nav.Link href="/home">Home</Nav.Link>
+                    <NavDropdown title="Categories" id="navbarScrollingDropdown">
+                      <NavDropdown.Item href="#action3">Action</NavDropdown.Item>
+                      <NavDropdown.Item href="#action4">Another action</NavDropdown.Item>
+                      <NavDropdown.Divider />
+                      <NavDropdown.Item href="#action5">Something else here</NavDropdown.Item>
+                    </NavDropdown>
+                    {showAdminBoard  && ( <Nav.Link href="/admin">Admin</Nav.Link> )}
+                    {currentUser  && ( <Nav.Link href="/profile">Profile</Nav.Link> )}
+                    {currentUser  && ( <Nav.Link onClick={logOut} href="/login">Log Out</Nav.Link> )}
+                    {!currentUser  && ( <Nav.Link href="/login">Login</Nav.Link> )}
+                    {!currentUser  && ( <Nav.Link  href="/register">Sign Up</Nav.Link> )}
+                  </Nav>
+                  <Form className="d-flex">
+                    <FormControl
+                      type="search"
+                      placeholder="Search"
+                      className="mr-2"
+                      aria-label="Search"
+                      />
+                    <Button variant="outline-success">Search</Button>
+                  </Form>
+                </Navbar.Collapse>
+              </Container>
+            </Navbar>
+      </NavigationBar>
 
         <div className="container mt-3">
           <Switch>
@@ -122,8 +94,24 @@ const App = () => {
           </Switch>
         </div>
       </div>
+      <Footer/>
     </Router>
   );
 };
+
+const NavigationBar = styled.div`
+
+@media screen and (min-width: 992px) {
+  .bar-style{
+    display: flex;
+    justify-content: space-between;
+
+  }
+}
+
+
+
+`
+
 
 export default App;
