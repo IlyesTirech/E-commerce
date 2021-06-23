@@ -26,8 +26,29 @@ const Home = () => {
   return (
 
     <>
+      <Jumbotron fluid className="bg-light mb-5">
+        <AdSection>
+          <Container className="">
+            <Row className="d-flex justify-content-between align-items-center">
+              <Col xs={12} sm={12} md={12} lg={6} xl={6} className="d-flex justify-content-center img-wrap">
+                <img src="https://images.pexels.com/photos/6908553/pexels-photo-6908553.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260" alt="" />
+              </Col>
+              <Col xs={10} sm={10} md={10} lg={5} xl={5} className="bg-white mt-5 mb-5">
+            <h1 className="mb-2 mt-5">Slogoskon</h1>
+            <p className="mb-4">
+             Limited edition items sell out really fast and rarely re-appear, do not miss your chance! 
+            </p>
+                <Button className="h-25 m-3 mb-5" variant="outline-dark">SHOP NOW</Button>
+              </Col>
+              
+            </Row>
+            <p>
+            </p>
+          </Container>
+        </AdSection>
+      </Jumbotron>
       <CollectionDisplay>
-        <Row className="mx-auto mb-5">
+        <Row className="mx-auto mb-3">
           <Col >
           <h2 className="collection-headline-title mb-3">Collections</h2>
             <p>Most popular collections</p>
@@ -90,7 +111,7 @@ const Home = () => {
                 <Button className="h-25 m-3 mb-5" variant="outline-dark">SHOP NOW</Button>
               </Col>
               
-              <Col xs={12} sm={12} md={6} lg={6} xl={6} className="d-flex justify-content-center">
+              <Col xs={12} sm={12} md={6} lg={6} xl={6} className="d-flex justify-content-center  img-wrap">
                 <img src="https://images.pexels.com/photos/279648/pexels-photo-279648.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260" alt="" />
               </Col>
             </Row>
@@ -163,6 +184,9 @@ img {
   min-height:400px;
   max-height: 800px;
   height: auto;
+}
+.img-wrap{
+  padding: 0;
 }
 
 `
