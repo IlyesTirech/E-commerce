@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Router, Switch, Route, Link } from "react-router-dom";
-import { Nav, NavDropdown, Form, FormControl, Button, Navbar, Container } from "react-bootstrap";
+import { Nav, NavDropdown, Form, FormControl, Button, Navbar, Container, InputGroup } from "react-bootstrap";
 import styled from "styled-components";
 
+import * as fa from "react-icons/fa"
 import GlobalStyle from "./GlobalStyle";
 
 import Footer from "./components/Footer";
@@ -57,10 +58,12 @@ const App = () => {
                   <Nav className="mr-auto my-2 my-lg-0" style={{ maxHeight: '250px' }} navbarScroll>
                     <Nav.Link href="/home">Home</Nav.Link>
                     <NavDropdown title="Categories" id="navbarScrollingDropdown">
-                      <NavDropdown.Item href="#action3">Action</NavDropdown.Item>
-                      <NavDropdown.Item href="#action4">Another action</NavDropdown.Item>
+                      <NavDropdown.Item href="#action3">Tables</NavDropdown.Item>
+                      <NavDropdown.Item href="#action4">Lamps</NavDropdown.Item>
+                      <NavDropdown.Item href="#action4">Chairs</NavDropdown.Item>
+                      <NavDropdown.Item href="#action4">Clocks</NavDropdown.Item>
                       <NavDropdown.Divider />
-                      <NavDropdown.Item href="#action5">Something else here</NavDropdown.Item>
+                      <NavDropdown.Item href="#action5">View All</NavDropdown.Item>
                     </NavDropdown>
                     {showAdminBoard  && ( <Nav.Link href="/admin">Admin</Nav.Link> )}
                     {currentUser  && ( <Nav.Link href="/profile">Profile</Nav.Link> )}
@@ -68,15 +71,16 @@ const App = () => {
                     {!currentUser  && ( <Nav.Link href="/login">Login</Nav.Link> )}
                     {!currentUser  && ( <Nav.Link  href="/register">Sign Up</Nav.Link> )}
                   </Nav>
-                  <Form className="d-flex">
+                  <InputGroup className="search-bar">
                     <FormControl
-                      type="search"
                       placeholder="Search"
-                      className="mr-2"
                       aria-label="Search"
-                      />
-                    <Button variant="outline-success">Search</Button>
-                  </Form>
+                      aria-describedby="basic-addon2"
+                    />
+                    <InputGroup.Append>
+                      <Button variant="dark"><fa.FaSearch/></Button>
+                    </InputGroup.Append>
+                  </InputGroup>
                 </Navbar.Collapse>
               </Container>
             </Navbar>
@@ -100,6 +104,10 @@ const App = () => {
 };
 
 const NavigationBar = styled.div`
+.search-bar{
+    width: 80%;
+
+  }
 
 @media screen and (min-width: 992px) {
   .bar-style{
@@ -107,11 +115,17 @@ const NavigationBar = styled.div`
     justify-content: space-between;
 
   }
+@media screen and (min-width: 770px) {
+  .search-bar{
+    width: 50%;
+
+  }
 }
-
-
-
 `
+
+
+
+
 
 
 export default App;
